@@ -10,7 +10,7 @@
     />
     <meta
       name="description"
-      content="Instantly share files for free with no limits. Fast, secure file sharing platform. Upload and share files up to 300MB!"
+      content="Instantly share files for free with no limits. Fast, secure file sharing platform. Upload and share files up to 1GB!"
     />
     <meta
       name="keywords"
@@ -206,7 +206,7 @@
         <div class="upload-area" id="dropZone">
           <i class="fas fa-cloud-upload-alt upload-icon"></i>
           <h3>Drag files here or click to upload</h3>
-          <p>Max file size: 300MB</p>
+          <p>Max file size: 1GB</p>
           <div id="progressContainer">
             <div id="uploadProgress"></div>
           </div>
@@ -273,10 +273,10 @@
       async function handleFiles(files) {
         if (!files.length) return;
 
-        const maxSize = 300 * 1024 * 1024; // 300MB
+        const maxSize = 1024 * 1024 * 1024; // 1GB
         const validFiles = Array.from(files).filter((file) => {
           if (file.size > maxSize) {
-            alert(`File ${file.name} exceeds 300MB limit`);
+            alert(`File ${file.name} exceeds 1gb limit`);
             return false;
           }
           return true;
