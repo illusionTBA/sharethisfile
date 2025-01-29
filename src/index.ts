@@ -48,7 +48,7 @@ const incrementViews = db.prepare(
 
 const app = new Elysia({
   serve: {
-    maxRequestBodySize: 1024 * 1024 * 300,
+    maxRequestBodySize: 1024 * 1024 * 1024,
   },
 })
   .get("/", ({ cookie: { pass } }) => {
