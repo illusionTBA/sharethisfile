@@ -1,0 +1,20 @@
+{
+  "name": "stf",
+  "module": "src/index",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "clean": "bun src/clean.ts"
+  },
+  "dependencies": {
+    "elysia": "^1.2.10",
+    "nanoid": "^5.0.9",
+    "tasai": "^1.0.0"
+  }
+}

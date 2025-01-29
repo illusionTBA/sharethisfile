@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Protected.</title>
+  </head>
+  <body>
+    <script>
+      const password = prompt("Enter password");
+
+      const res = fetch("/p", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            location.href = "/";
+          } else {
+            alert("Failed");
+            location.reload();
+          }
+        });
+    </script>
+  </body>
+</html>
