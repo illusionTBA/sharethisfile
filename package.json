@@ -13,6 +13,7 @@
     "clean": "bun src/clean.ts"
   },
   "dependencies": {
+    "@elysiajs/cron": "^1.2.0",
     "elysia": "^1.2.10",
     "nanoid": "^5.0.9",
     "tasai": "^1.0.0"

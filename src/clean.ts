@@ -1,5 +1,6 @@
 import { $ } from "bun";
 
-await $`rm data.db`;
+await $`rm data.db`.nothrow();
 
-await $`rm data/*`;
+// will throw if the data dir is empty
+await $`rm data/*`.nothrow();

@@ -1,8 +1,9 @@
 import { Elysia, t } from "elysia";
+import { cron, Patterns  } from '@elysiajs/cron'
 import { Database } from "bun:sqlite";
 import { log } from "./utils";
 import { nanoid } from "nanoid";
-
+import fs from "node:fs/promises"
 type DBFile = {
   id: string;
   name: string;
@@ -51,6 +52,29 @@ const app = new Elysia({
     maxRequestBodySize: 1024 * 1024 * 1024,
   },
 })
+.use(
+  cron({
+      name: 'heartbeat',
+      pattern: Patterns.everyMinutes(1),
+      async run() {
+          log.info("Checking storage sync...")
+          const files = getFiles.all() as DBFile[];
+          let count = 0;
+          for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              const exists = await Bun.file(file.loc).exists();
+              if (!exists) {
+                await deleteFile.run(file.id)
+                log.info(`${file.id} Deleted from db (out of sync)...`)
+                count++;
+                continue;
+              }
+
+          }
+          log.info(`Removed ${count} out of sync files.`)
+      }
+  })
+)
   .get("/", ({ cookie: { pass } }) => {
     if (!passwordEnabled) return Bun.file("./public/index.html");
     if (!pass?.value || pass.value !== hashedPass)
