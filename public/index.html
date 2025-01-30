@@ -194,6 +194,12 @@
         background: #fff;
         border-radius: 8px;
       }
+      .danger {
+        transition: all 0.1s ease-in-out;
+      }
+      .danger:hover {
+        background: #e75c68;
+      }
     </style>
   </head>
   <body>
@@ -263,12 +269,6 @@
         input.click();
       });
 
-      // Password toggle
-      passwordCheckbox.addEventListener("change", () => {
-        passwordField.style.display = passwordCheckbox.checked
-          ? "block"
-          : "none";
-      });
 
       async function handleFiles(files) {
         if (!files.length) return;
@@ -379,12 +379,29 @@
                 <span>${file.views} view${file.views !== 1 ? "s" : ""}</span>
               </div>
             </div>
-            <button class="btn" onclick="copyLink('${
+            <div style="display:flex;gap:0.5rem; align-items:center;">
+              <button class="btn" onclick="copyLink('${
               file.id
             }')">Copy Link</button>
+            <button style="" class="btn danger" onClick="deleteFile('${file.id}')"><i class="fa-solid fa-trash"></i></button>
+            </div>
           `;
           recentFilesContainer.appendChild(fileItem);
         });
+      }
+
+      async function deleteFile(id) {
+        const res = await fetch(`/file/${id}`, {
+          method: "DELETE"
+        })
+        const data = await res.json();
+        
+        if (!data.success) {
+          showNotification("Failed to delete file...")
+          return;
+        }
+        loadRecentFiles();
+        showNotification("Deleted file successfuly")
       }
 
       function formatFileSize(bytes) {

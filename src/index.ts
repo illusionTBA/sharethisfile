@@ -97,6 +97,23 @@ const app = new Elysia({
       }),
     }
   )
+  .delete("/file/:id", async ({cookie: {pass}, params}) => {
+    const { id } = params;
+
+    if (passwordEnabled) {
+      if (!pass.value || pass.value !== hashedPass) {
+
+        return jsonResponse({success: false}, 400);
+      }
+    }
+    if (!id) {
+      return jsonResponse({success: false}, 404)
+    }
+    await removeFile(id);
+    return Response.json({success: true}, {
+      status: 200
+    })
+  })
   .get(
     "/file/:id",
     async ({ params }) => {
@@ -107,12 +124,13 @@ const app = new Elysia({
       if (!file)
         return jsonResponse({ success: false, message: "File not found" }, 404);
 
-      // Increment view count
       incrementViews.run(id);
 
       const f = Bun.file(file.loc);
-      if (!(await f.exists()))
+      if (!(await f.exists())) {
+        await deleteFile.run(file.id);
         return jsonResponse({ success: false, message: "File not found" }, 404);
+      }
 
       return Bun.file(file.loc);
     },
@@ -193,4 +211,22 @@ function jsonResponse(data: any, status = 200) {
       "Content-Type": "application/json",
     },
   });
+}
+
+async function removeFile(id: string) {
+  const file = getFile.get(id) as DBFile;
+  
+  if (!file)
+      return;
+  const f = Bun.file(file.loc);
+
+  if (!(await f.exists())) {
+    deleteFile.run(file.id);
+  } else {
+    await fs.rm(file.loc);
+    await deleteFile.run(file.id);
+    
+  }
+  log.info(`user deleted file ${file.id}`)
+
 }
